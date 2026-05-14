@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الأسعار - نظافة brillante</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        .pricing-toggle{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:50px}
+        .pricing-toggle span{font-weight:600;color:var(--text-muted);transition:var(--transition)}
+        .pricing-toggle span.active{color:var(--text)}
+        .toggle-switch{width:50px;height:28px;border-radius:14px;background:var(--border);cursor:pointer;position:relative;transition:var(--transition)}
+        .toggle-switch.active{background:var(--primary)}
+        .toggle-switch::after{content:'';position:absolute;top:3px;right:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:var(--transition);box-shadow:0 2px 4px rgba(0,0,0,0.1)}
+        .toggle-switch.active::after{right:25px}
+        .pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:20px}
+        .pricing-card{background:var(--bg);border-radius:var(--radius-lg);padding:40px 32px;border:1px solid var(--border);box-shadow:var(--shadow-sm);transition:var(--transition);position:relative}
+        .pricing-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-6px)}
+        .pricing-card.featured{border-color:var(--primary);box-shadow:0 8px 32px rgba(13,148,136,0.15)}
+        .pricing-card.featured::before{content:'الأكثر طلباً';position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--primary);color:#fff;padding:4px 20px;border-radius:60px;font-size:0.8rem;font-weight:700}
+        .pricing-card .plan-name{font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:4px}
+        .pricing-card .plan-desc{color:var(--text-muted);font-size:0.9rem;margin-bottom:24px}
+        .pricing-card .price{font-size:3rem;font-weight:900;color:var(--text);line-height:1}
+        .pricing-card .price sup{font-size:1.2rem;font-weight:600;top:-1em}
+        .pricing-card .price span{font-size:1rem;font-weight:500;color:var(--text-muted)}
+        .pricing-card .price-note{color:var(--text-muted);font-size:0.85rem;margin-bottom:24px}
+        .pricing-card .features{list-style:none;margin:0 0 28px}
+        .pricing-card .features li{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);font-size:0.92rem}
+        .pricing-card .features li:last-child{border-bottom:none}
+        .pricing-card .features li i{color:var(--primary);font-size:0.85rem}
+        .pricing-card .features li i.fa-times{color:#ef4444}
+        .pricing-card .btn-primary,.pricing-card .btn-outline{width:100%;justify-content:center}
+        .pricing-note{text-align:center;margin-top:40px;color:var(--text-muted);font-size:0.95rem}
+        .pricing-note a{color:var(--primary);text-decoration:underline}
+        .faq-section{margin-top:80px}
+        .addon-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:24px}
+        .addon-item{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:var(--bg-alt);border-radius:var(--radius);border:1px solid var(--border)}
+        .addon-item h4{font-size:0.95rem;font-weight:600;color:var(--text)}
+        .addon-item span{font-weight:700;color:var(--primary)}
+        @media(max-width:900px){.pricing-grid{grid-template-columns:1fr;max-width:420px;margin:0 auto}}
+        @media(max-width:480px){.addon-grid{grid-template-columns:1fr}}
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <div class="logo">
+                <div class="logo-icon"><i class="fas fa-broom"></i></div>
+                <div>
+                    <h1>نظافة brillante</h1>
+                    <p>خدمة تنظيف احترافية</p>
+                </div>
+            </div>
+            <nav class="navbar">
+                <ul>
+                    <li><a href="index.html">الرئيسية</a></li>
+                    <li><a href="services.html">خدماتنا</a></li>
+                    <li><a href="pricing.html" class="active">الأسعار</a></li>
+                    <li><a href="gallery.html">معرض الصور</a></li>
+                    <li><a href="booking.html" class="btn-primary">حجز خدمة</a></li>
+                </ul>
+            </nav>
+            <button class="mobile-menu-btn"><i class="fas fa-bars"></i></button>
+        </div>
+    </header>
+
+    <section class="section-padding">
+        <div class="container">
+            <div class="section-label" style="display:inline-block;margin:0 auto 16px;text-align:center;width:auto">أسعار تنافسية</div>
+            <h2 class="section-title">باقاتنا <span class="highlight">التنظيفية</span></h2>
+            <p class="section-subtitle">اختر الباقة التي تناسب احتياجاتك، جميع الباقات تشمل ضمان الرضا الكامل</p>
+
+            <div class="pricing-toggle">
+                <span class="active" id="weeklyLabel">أسبوعي</span>
+                <div class="toggle-switch" id="pricingToggle" onclick="togglePricing()"></div>
+                <span id="monthlyLabel">شهري</span>
+            </div>
+
+            <div class="pricing-grid" id="pricingGrid">
+                <div class="pricing-card">
+                    <div class="plan-name">باقة أساسية</div>
+                    <div class="plan-desc">للتنظيف المنتظم للمنازل الصغيرة</div>
+                    <div class="price" data-weekly="150" data-monthly="500"><sup>درهم</sup>150</div>
+                    <div class="price-note">للجلسة الواحدة / شهرياً ابتداءً من 500 درهم</div>
+                    <ul class="features">
+                        <li><i class="fas fa-check"></i> تنظيف غرفتين وصالة</li>
+                        <li><i class="fas fa-check"></i> مسح وتنظيف الأرضيات</li>
+                        <li><i class="fas fa-check"></i> تنظيف الحمام والمطبخ</li>
+                        <li><i class="fas fa-check"></i> إزالة الغبار</li>
+                        <li><i class="fas fa-times"></i> تنظيف النوافذ</li>
+                        <li><i class="fas fa-times"></i> تنظيف السجاد بالبخار</li>
+                    </ul>
+                    <a href="booking.html?service=daily" class="btn-outline">اختر الباقة</a>
+                </div>
+                <div class="pricing-card featured">
+                    <div class="plan-name">باقة متميزة</div>
+                    <div class="plan-desc">للتنظيف الشامل للمنازل المتوسطة</div>
+                    <div class="price" data-weekly="300" data-monthly="900"><sup>درهم</sup>300</div>
+                    <div class="price-note">للجلسة الواحدة / شهرياً ابتداءً من 900 درهم</div>
+                    <ul class="features">
+                        <li><i class="fas fa-check"></i> تنظيف جميع الغرف والصالات</li>
+                        <li><i class="fas fa-check"></i> تنظيف عميق للحمامات والمطابخ</li>
+                        <li><i class="fas fa-check"></i> تنظيف النوافذ والزجاج</li>
+                        <li><i class="fas fa-check"></i> تنظيف الأثاث والأسطح</li>
+                        <li><i class="fas fa-check"></i> تنظيف السجاد بالبخار</li>
+                        <li><i class="fas fa-times"></i> تنظيف خزائن المطبخ</li>
+                    </ul>
+                    <a href="booking.html?service=deep" class="btn-primary">اختر الباقة</a>
+                </div>
+                <div class="pricing-card">
+                    <div class="plan-name">باقة كاملة</div>
+                    <div class="plan-desc">للتنظيف الشامل والفاخر للمنازل الكبيرة</div>
+                    <div class="price" data-weekly="500" data-monthly="1500"><sup>درهم</sup>500</div>
+                    <div class="price-note">للجلسة الواحدة / شهرياً ابتداءً من 1500 درهم</div>
+                    <ul class="features">
+                        <li><i class="fas fa-check"></i> تنظيف شامل لجميع الغرف</li>
+                        <li><i class="fas fa-check"></i> تنظيف عميق للحمامات والمطابخ</li>
+                        <li><i class="fas fa-check"></i> تنظيف النوافذ والزجاج</li>
+                        <li><i class="fas fa-check"></i> تنظيف السجاد والستائر بالبخار</li>
+                        <li><i class="fas fa-check"></i> تنظيف خزائن المطبخ والغرف</li>
+                        <li><i class="fas fa-check"></i> تعقيم شامل للمنزل</li>
+                    </ul>
+                    <a href="booking.html?service=special" class="btn-outline">اختر الباقة</a>
+                </div>
+            </div>
+
+            <div class="pricing-note">
+                جميع الأسعار شاملة ضريبة القيمة المضافة. للاستفسار عن العروض الخاصة للشركات: <a href="contact.html">اتصل بنا</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-padding" style="background:var(--bg-alt)">
+        <div class="container">
+            <div class="section-label" style="display:inline-block;margin:0 auto 16px;text-align:center;width:auto">خدمات إضافية</div>
+            <h2 class="section-title">خدمات <span class="highlight">إضافية</span></h2>
+            <p class="section-subtitle">أضف أي من هذه الخدمات إلى باقتك المختارة بسعر إضافي</p>
+            <div class="addon-grid">
+                <div class="addon-item"><h4>تنظيف سجاد إضافي (غرفة)</h4><span>+80 درهم</span></div>
+                <div class="addon-item"><h4>تنظيف ستائر (نافذة)</h4><span>+50 درهم</span></div>
+                <div class="addon-item"><h4>تنظيف ثلاجة من الداخل</h4><span>+120 درهم</span></div>
+                <div class="addon-item"><h4>تنظيف فرن</h4><span>+100 درهم</span></div>
+                <div class="addon-item"><h4>تلميع الأثاث الخشبي</h4><span>+90 درهم</span></div>
+                <div class="addon-item"><h4>تنظيف شرفة أو تراس</h4><span>+70 درهم</span></div>
+                <div class="addon-item"><h4>تنظيف مكيفات (وحدة)</h4><span>+150 درهم</span></div>
+                <div class="addon-item"><h4>تعقيم إضافي</h4><span>+60 درهم</span></div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>نظافة brillante</h3>
+                    <p>خدمة تنظيف احترافية لمنازل ومكاتب نظيفة وصحية. نضمن لك الجودة والاحترافية في كل خدمة.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>روابط سريعة</h3>
+                    <ul>
+                        <li><a href="index.html">الرئيسية</a></li>
+                        <li><a href="services.html">خدماتنا</a></li>
+                        <li><a href="pricing.html">الأسعار</a></li>
+                        <li><a href="gallery.html">معرض الصور</a></li>
+                        <li><a href="blog.html">المدونة</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>روابط مهمة</h3>
+                    <ul>
+                        <li><a href="about.html">عن الشركة</a></li>
+                        <li><a href="contact.html">اتصل بنا</a></li>
+                        <li><a href="privacy.html">سياسة الخصوصية</a></li>
+                        <li><a href="terms.html">الشروط والأحكام</a></li>
+                        <li><a href="admin">لوحة التحكم</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>اتصل بنا</h3>
+                    <p><i class="fas fa-phone"></i> 0645552678</p>
+                    <p><i class="fas fa-envelope"></i> info@brilliant.ma</p>
+                    <p><i class="fas fa-map-marker-alt"></i> الدار البيضاء، المغرب</p>
+                </div>
+            </div>
+            <div class="footer-bottom"><p>&copy; 2026 نظافة brillante. جميع الحقوق محفوظة.</p></div>
+        </div>
+    </footer>
+
+    <script src="assets/js/script.js"></script>
+    <script>
+        function togglePricing(){
+            const toggle=document.getElementById('pricingToggle');
+            const weekly=document.getElementById('weeklyLabel');
+            const monthly=document.getElementById('monthlyLabel');
+            toggle.classList.toggle('active');
+            weekly.classList.toggle('active');
+            monthly.classList.toggle('active');
+            const isMonthly=toggle.classList.contains('active');
+            document.querySelectorAll('.price').forEach(el=>{
+                const val=isMonthly?el.dataset.monthly:el.dataset.weekly;
+                el.innerHTML=(val?`<sup>درهم</sup>${val}`:el.innerHTML);
+            });
+            const note=isMonthly?'شهرياً':'للجلسة الواحدة';
+            document.querySelectorAll('.price-note').forEach(el=>{
+                el.textContent=note+' / شهرياً ابتداءً من ' + (isMonthly?el.closest('.pricing-card').querySelector('.price').dataset.monthly:el.closest('.pricing-card').querySelector('.price').dataset.weekly)+' درهم';
+            });
+        }
+    </script>
+</body>
+</html>

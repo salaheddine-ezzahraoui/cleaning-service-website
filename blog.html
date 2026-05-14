@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المدونة - نظافة brillante</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        .blog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+        .blog-card{border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border);transition:var(--transition);background:var(--bg)}
+        .blog-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-6px)}
+        .blog-card img{width:100%;height:200px;object-fit:cover}
+        .blog-card-body{padding:24px}
+        .blog-card .date{font-size:0.82rem;color:var(--text-muted);display:flex;align-items:center;gap:6px;margin-bottom:10px}
+        .blog-card .cat{display:inline-block;background:var(--primary-bg);color:var(--primary);padding:3px 14px;border-radius:60px;font-size:0.78rem;font-weight:600}
+        .blog-card h3{font-size:1.1rem;font-weight:700;color:var(--text);margin:10px 0 8px;line-height:1.4}
+        .blog-card p{color:var(--text-muted);font-size:0.9rem;line-height:1.7;margin-bottom:16px}
+        .blog-card .read-more{color:var(--primary);font-weight:600;font-size:0.9rem;display:inline-flex;align-items:center;gap:6px}
+        .blog-card .read-more:hover{gap:10px}
+        .article-modal{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;z-index:2000;padding:20px}
+        .article-modal.active{display:flex}
+        .article-modal .modal-box{background:var(--bg);border-radius:var(--radius-xl);max-width:700px;width:100%;max-height:80vh;overflow-y:auto;padding:40px}
+        .article-modal .modal-box .close{float:left;font-size:1.8rem;cursor:pointer;color:var(--text-muted);background:none;border:none}
+        .article-modal .modal-box img{width:100%;border-radius:var(--radius-lg);margin-bottom:20px;max-height:300px;object-fit:cover}
+        .article-modal .modal-box h2{font-size:1.6rem;font-weight:800;color:var(--text);margin-bottom:12px}
+        .article-modal .modal-box .meta{color:var(--text-muted);font-size:0.9rem;margin-bottom:20px;display:flex;gap:16px;flex-wrap:wrap}
+        .article-modal .modal-box .content{line-height:2;color:var(--text-body)}
+        .search-bar{max-width:500px;margin:0 auto 40px;position:relative}
+        .search-bar input{padding-right:46px}
+        .search-bar i{position:absolute;right:16px;top:50%;transform:translateY(-50%);color:var(--text-muted)}
+        @media(max-width:900px){.blog-grid{grid-template-columns:repeat(2,1fr)}}
+        @media(max-width:480px){.blog-grid{grid-template-columns:1fr}}
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <div class="logo">
+                <div class="logo-icon"><i class="fas fa-broom"></i></div>
+                <div>
+                    <h1>نظافة brillante</h1>
+                    <p>خدمة تنظيف احترافية</p>
+                </div>
+            </div>
+            <nav class="navbar">
+                <ul>
+                    <li><a href="index.html">الرئيسية</a></li>
+                    <li><a href="services.html">خدماتنا</a></li>
+                    <li><a href="pricing.html">الأسعار</a></li>
+                    <li><a href="gallery.html">معرض الصور</a></li>
+                    <li><a href="blog.html" class="active">المدونة</a></li>
+                    <li><a href="booking.html" class="btn-primary">حجز خدمة</a></li>
+                </ul>
+            </nav>
+            <button class="mobile-menu-btn"><i class="fas fa-bars"></i></button>
+        </div>
+    </header>
+
+    <section class="section-padding">
+        <div class="container">
+            <div class="section-label" style="display:inline-block;margin:0 auto 16px;text-align:center;width:auto">مدونتنا</div>
+            <h2 class="section-title">نصائح <span class="highlight">للتنظيف</span></h2>
+            <p class="section-subtitle">نصائح وحيل احترافية للحفاظ على منزلك نظيفاً وصحياً</p>
+
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" id="blogSearch" placeholder="ابحث في المقالات..." oninput="searchBlog(this.value)">
+            </div>
+
+            <div class="blog-grid" id="blogGrid"></div>
+        </div>
+    </section>
+
+    <div class="article-modal" id="articleModal">
+        <div class="modal-box" onclick="event.stopPropagation()">
+            <button class="close" onclick="closeArticle()">&times;</button>
+            <img id="articleImg" src="" alt="">
+            <h2 id="articleTitle"></h2>
+            <div class="meta" id="articleMeta"></div>
+            <div class="content" id="articleContent"></div>
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>نظافة brillante</h3>
+                    <p>خدمة تنظيف احترافية لمنازل ومكاتب نظيفة وصحية.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>روابط سريعة</h3>
+                    <ul>
+                        <li><a href="index.html">الرئيسية</a></li>
+                        <li><a href="services.html">خدماتنا</a></li>
+                        <li><a href="pricing.html">الأسعار</a></li>
+                        <li><a href="gallery.html">معرض الصور</a></li>
+                        <li><a href="blog.html">المدونة</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>روابط مهمة</h3>
+                    <ul>
+                        <li><a href="about.html">عن الشركة</a></li>
+                        <li><a href="contact.html">اتصل بنا</a></li>
+                        <li><a href="privacy.html">سياسة الخصوصية</a></li>
+                        <li><a href="terms.html">الشروط والأحكام</a></li>
+                        <li><a href="admin">لوحة التحكم</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>اتصل بنا</h3>
+                    <p><i class="fas fa-phone"></i> 0645552678</p>
+                    <p><i class="fas fa-envelope"></i> info@brilliant.ma</p>
+                    <p><i class="fas fa-map-marker-alt"></i> الدار البيضاء، المغرب</p>
+                </div>
+            </div>
+            <div class="footer-bottom"><p>&copy; 2026 نظافة brillante. جميع الحقوق محفوظة.</p></div>
+        </div>
+    </footer>
+
+    <script src="assets/js/script.js"></script>
+    <script>
+        const articles=[
+            {
+                id:1,title:'10 نصائح ذهبية لتنظيف منزلك في أقل من ساعة',
+                cat:'نصائح',date:'2026-04-15',
+                img:'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&q=80',
+                excerpt:'تنظيف المنزل بالكامل في وقت قياسي ممكن مع هذه النصائح العملية...',
+                content:'<p>تنظيف المنزل قد يكون مهمة شاقة، خاصة عندما يكون لديك وقت محدود. لكن مع هذه النصائح العشر، يمكنك تنظيف منزلك بالكامل في أقل من ساعة:</p><ol><li><strong>جهز أدواتك مسبقاً:</strong> قبل البدء، تأكد من توفر جميع أدوات التنظيف التي تحتاجها.</li><li><strong>ابدأ من الأعلى إلى الأسفل:</strong> نظف الأسطح العالية أولاً ثم انتقل إلى الأسفل.</li><li><strong>استخدم الموسيقى للتحفيز:</strong> الموسيقى الحماسية تجعلك تتحرك بسرعة أكبر.</li><li><strong>نظف غرفة واحدة في كل مرة:</strong> لا تتنقل بين الغرف بشكل عشوائي.</li><li><strong>استخدم الخل الأبيض:</strong> منظف طبيعي فعال للأسطح والزجاج.</li><li><strong>تخلص من الفوضى أولاً:</strong> رتب الأشياء في أماكنها قبل البدء بالتنظيف.</li><li><strong>استخدم المكنسة الكهربائية بانتظام:</strong> توفير الوقت والجهد.</li><li><strong>نظف الحمام أخيراً:</strong> لأنك قد تنشر الأوساخ منه.</li><li><strong>استخدم مناشف ميكروفايبر:</strong> فعالة أكثر في جمع الغبار.</li><li><strong>حافظ على روتين يومي:</strong> 10 دقائق يومياً توفر عليك ساعات في نهاية الأسبوع.</li></ol><p>بتطبيق هذه النصائح، ستوفر وقتك وجهدك وستحصل على منزل نظيف ومرتب.</p>'
+            },
+            {
+                id:2,title:'كيف تختار شركة التنظيف المناسبة لمنزلك؟',
+                cat:'إرشادات',date:'2026-04-10',
+                img:'https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?w=600&q=80',
+                excerpt:'مع كثرة شركات التنظيف، كيف تختار الأنسب؟ دليل شامل لاختيار أفضل خدمة تنظيف...',
+                content:'<p>اختيار شركة التنظيف المناسبة يمكن أن يكون مربكاً مع كثرة الخيارات المتاحة. إليك دليل شامل لمساعدتك:</p><p><strong>1. السمعة والتقييمات:</strong> ابحث عن تقييمات العملاء السابقين على وسائل التواصل الاجتماعي والمنصات المختلفة.</p><p><strong>2. الترخيص والتأمين:</strong> تأكد من أن الشركة مرخصة ومؤمنة لحماية ممتلكاتك.</p><p><strong>3. الخبرة والتدريب:</strong> اسأل عن خبرة فريق العمل وبرامج التدريب التي يخضعون لها.</p><p><strong>4. المواد المستخدمة:</strong> تأكد من استخدام مواد تنظيف آمنة وصديقة للبيئة.</p><p><strong>5. الضمان:</strong> اختر شركة تقدم ضماناً للخدمة في حال عدم رضاك.</p><p><strong>6. الشفافية في الأسعار:</strong> يجب أن تكون الأسعار واضحة دون رسوم مخفية.</p><p><strong>7. المرونة:</strong> اختر شركة تقدم خدمات مرنة تناسب جدولك الزمني.</p><p>في نظافة brillante، نلتزم بجميع هذه المعايير لنضمن لك أفضل تجربة تنظيف.</p>'
+            },
+            {
+                id:3,title:'فوائد التنظيف العميق الدوري للمنزل',
+                cat:'صحة',date:'2026-04-05',
+                img:'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=600&q=80',
+                excerpt:'التنظيف العميق ليس ترفاً بل ضرورة صحية. تعرف على فوائده لصحة عائلتك...',
+                content:'<p>التنظيف العميق الدوري للمنزل له فوائد صحية ونفسية عديدة. إليك أهمها:</p><p><strong>1. تحسين جودة الهواء:</strong> إزالة الغبار والعفن والبكتيريا من الأسطح والهواء يساعد في تحسين جودة الهواء داخل المنزل وتقليل الحساسية.</p><p><strong>2. القضاء على البكتيريا والجراثيم:</strong> التنظيف العميق يصل إلى المناطق التي لا تصل إليها التنظيفة اليومية مثل خلف الأجهزة والزوايا الضيقة.</p><p><strong>3. إطالة عمر الأثاث:</strong> إزالة الأوساخ والغبار بانتظام تطيل عمر الأثاث والسجاد والمفروشات.</p><p><strong>4. تحسين الصحة النفسية:</strong> المنزل النظيف والمرتب يساعد في تقليل التوتر والقلق وتحسين المزاج.</p><p><strong>5. الوقاية من الأمراض:</strong> تنظيف وتعقيم الأسطح يقلل من انتشار الأمراض والعدوى بين أفراد الأسرة.</p><p>نوصي بالتنظيف العميق مرة كل 3 أشهر على الأقل للحفاظ على منزل صحي ونظيف.</p>'
+            },
+            {
+                id:4,title:'أفضل طرق تنظيف المطبخ بمواد طبيعية',
+                cat:'وصفات',date:'2026-03-28',
+                img:'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80',
+                excerpt:'استخدم مواد طبيعية متوفرة في منزلك لتنظيف المطبخ بشكل فعال وآمن...',
+                content:'<p>تنظيف المطبخ باستخدام مواد طبيعية ليس فقط آمناً على صحتك، بل أيضاً فعال وصديق للبيئة. إليك أفضل الطرق:</p><p><strong>الخل الأبيض:</strong> ممتاز لتنظيف الأسطح وإزالة الدهون وتلميع الزجاج.</p><p><strong>بيكربونات الصودا:</strong> مزيل طبيعي للبقع والروائح الكريهة، استخدمها مع الخل للحصول على فاعلية أكبر.</p><p><strong>عصير الليمون:</strong> مطهر طبيعي ومزيل للبقع، استخدمه لتنظيف ألواح التقطيع.</p><p><strong>زيت الزيتون:</strong> ممتاز لتلميع الأثاث الخشبي والأسطح المعدنية.</p><p><strong>الملح:</strong> يساعد في إزالة البقع الصعبة من الأسطح.</p><p>هذه المواد الطبيعية متوفرة في كل منزل وآمنة تماماً على صحتك وصحة أطفالك.</p>'
+            },
+            {
+                id:5,title:'دليل تنظيف الحمامات: خطوة بخطوة',
+                cat:'إرشادات',date:'2026-03-20',
+                img:'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=600&q=80',
+                excerpt:'تنظيف الحمام قد يكون مزعجاً، لكن مع هذا الدليل ستصبح المهمة سهلة وسريعة...',
+                content:'<p>تنظيف الحمام بشكل احترافي يتطلب اتباع خطوات محددة للحصول على أفضل النتائج:</p><p><strong>الخطوة 1:</strong> رش جميع الأسطح بمطهر واتركه لبضع دقائق ليعمل.</p><p><strong>الخطوة 2:</strong> نظف المرحاض من الداخل والخارج باستخدام فرشاة مخصصة.</p><p><strong>الخطوة 3:</strong> اغسل الحوض والمغسلة باستخدام منظف مناسب.</p><p><strong>الخطوة 4:</strong> نظف رأس الدش وجدران الحمام من الصابون المتراكم.</p><p><strong>الخطوة 5:</strong> جفف جميع الأسطح بقطعة قماش نظيفة لمنع تكون البقع المائية.</p><p><strong>الخطوة 6:</strong> نظف المرايا باستخدام منظف زجاج للحصول على لمعان خالٍ من الخطوط.</p><p><strong>الخطوة 7:</strong> اغسل الأرضية أخيراً وجففها جيداً.</p><p>اتبع هذه الخطوات وستحصل على حمام نظيف ومعقم في وقت قياسي.</p>'
+            },
+            {
+                id:6,title:'تنظيف المكاتب: كيف تحافظ على بيئة عمل صحية؟',
+                cat:'مكاتب',date:'2026-03-15',
+                img:'https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&q=80',
+                excerpt:'بيئة العمل النظيفة تزيد الإنتاجية وتحسن الصحة النفسية للموظفين...',
+                content:'<p>المكتب النظيف والمنظم ليس مجرد مظهر جميل، بل له تأثير مباشر على إنتاجية وصحة الموظفين. إليك أهم النصائح:</p><p><strong>1. تنظيف يومي للأسطح:</strong> مسح المكاتب والأسطح يومياً يمنع تراكم الغبار والبكتيريا.</p><p><strong>2. تعقيم المقابض والأزرار:</strong> مقابض الأبواب وأزرار المصعد والمفاتيح الكهربائية هي الأكثر تلوثاً.</p><p><strong>3. تنظيم الكابلات والأسلاك:</strong> كابلات مرتبة تعطي مظهراً احترافياً وتسهل التنظيف.</p><p><strong>4. تنظيف الشاشات ولوحات المفاتيح:</strong> استخدام مناديل خاصة لتنظيف الشاشات ولوحات المفاتيح.</p><p><strong>5. الاهتمام بنظافة دورات المياه:</strong> يجب تنظيف دورات المياه بشكل دوري يومياً.</p><p><strong>6. تهوية المكتب:</strong> فتح النوافذ بانتظام لتجديد الهواء.</p><p>نحن في نظافة brillante نقدم خدمات تنظيف مكاتب احترافية تناسب احتياجات عملك.</p>'
+            },
+            {
+                id:7,title:'أسرار تنظيف السجاد والمفروشات في المنزل',
+                cat:'نصائح',date:'2026-03-08',
+                img:'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=600&q=80',
+                excerpt:'تنظيف السجاد قد يكون مكلفاً إذا استعنت بشركات متخصصة، لكن هناك طرق منزلية فعالة...',
+                content:'<p>السجاد والمفروشات من أكثر العناصر التي تتراكم عليها الأوساخ والغبار في المنزل. إليك أسرار تنظيفها:</p><p><strong>1. التنظيف بالمكنسة الكهربائية:</strong> استخدم المكنسة أسبوعياً مرتين على الأقل.</p><p><strong>2. معالجة البقع فوراً:</strong> البقع الجديدة أسهل في الإزالة من القديمة.</p><p><strong>3. استخدام البخار:</strong> التنظيف بالبخار يقتل البكتيريا والعث بشكل فعال.</p><p><strong>4. بيكربونات الصودا:</strong> رشها على السجاد وتركها لمدة 15 دقيقة قبلكنسها يزيل الروائح.</p><p><strong>5. التنظيف الجاف:</strong> باستخدام مسحوق خاص ينثر على السجاد ثم يكنس.</p><p><strong>6. الاستعانة بالخبراء:</strong> للتنظيف العميق، ننصح باستخدام خدمات متخصصة مرة كل 6 أشهر.</p>'
+            },
+            {
+                id:8,title:'كيف تحافظ على نظافة منزلك مع الأطفال والحيوانات الأليفة؟',
+                cat:'نصائح',date:'2026-03-01',
+                img:'https://images.unsplash.com/photo-1600448713193-28e3f3c0db2a?w=600&q=80',
+                excerpt:'وجود الأطفال والحيوانات الأليفة يجعل الحفاظ على نظافة المنزل تحدياً يومياً...',
+                content:'<p>الحفاظ على منزل نظيف مع وجود أطفال وحيوانات أليفة قد يكون تحدياً، لكنه ليس مستحيلاً. إليك بعض النصائح:</p><p><strong>1. إنشاء روتين يومي بسيط:</strong> 10-15 دقيقة يومياً للتنظيف السريع تمنع تراكم الفوضى.</p><p><strong>2. استخدام أغطية قابلة للغسل:</strong> للأثاث والكنب لتسهيل التنظيف.</p><p><strong>3. تنظيف بقع الحيوانات فوراً:</strong> كلما أسرعت في التنظيف، كلما كان أفضل.</p><p><strong>4. تخصيص مكان للعب الأطفال:</strong> يحتوي على صناديق تخزين لسهولة الترتيب.</p><p><strong>5. استخدام مواد تنظيف آمنة:</strong> للأطفال والحيوانات الأليفة.</p><p><strong>6. تنظيف الأرضيات يومياً:</strong> بالمكنسة أو الممسحة لإزالة الشعر والفتات.</p><p><strong>7. الاستعانة بخدمات التنظيف الدوري:</strong> مرة شهرياً للحصول على تنظيف عميق.</p>'
+            },
+            {
+                id:9,title:'أهمية التعقيم في المنازل بعد فصل الشتاء',
+                cat:'صحة',date:'2026-02-20',
+                img:'https://images.unsplash.com/photo-1602872030213-3257f3c8a6cf?w=600&q=80',
+                excerpt:'بعد فصل الشتاء، يحتاج المنزل إلى تعقيم شامل للتخلص من البكتيريا والفيروسات...',
+                content:'<p>فصل الشتاء قد يترك آثاراً على منزلك تتجاوز مجرد الأوساخ الظاهرة. إليك لماذا يعتبر التعقيم الربيعي ضرورياً:</p><p><strong>1. القضاء على الجراثيم الموسمية:</strong> الشتاء هو موسم انتشار الفيروسات والإنفلونزا.</p><p><strong>2. إزالة العفن:</strong> الرطوبة في الشتاء تساهم في نمو العفن في الزوايا المخفية.</p><p><strong>3. تنظيف التهوية:</strong> مراوح التهوية ومكيفات الهواء تحتاج إلى تنظيف بعد الاستخدام المكثف.</p><p><strong>4. تجديد الهواء:</strong> فتح النوافذ لتهوية المنزل بعد أشهر من الإغلاق.</p><p><strong>5. تنظيف السجاد والمفروشات:</strong> التي تراكمت عليها الأوساخ خلال الشتاء.</p><p>في نظافة brillante، نقدم خدمة تعقيم شاملة للمنازل بعد فصل الشتاء لضمان بيئة صحية لعائلتك.</p>'
+            }
+        ];
+
+        function renderBlog(list){
+            const grid=document.getElementById('blogGrid');
+            grid.innerHTML=list.map(a=>`
+                <div class="blog-card" onclick="openArticle(${a.id})">
+                    <img src="${a.img}" alt="${a.title}" loading="lazy">
+                    <div class="blog-card-body">
+                        <span class="cat">${a.cat}</span>
+                        <h3>${a.title}</h3>
+                        <div class="date"><i class="fas fa-calendar"></i> ${a.date}</div>
+                        <p>${a.excerpt}</p>
+                        <span class="read-more">اقرأ المزيد <i class="fas fa-arrow-left"></i></span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function searchBlog(val){
+            const q=val.toLowerCase();
+            const filtered=articles.filter(a=>a.title.includes(q)||a.cat.includes(q)||a.content.includes(q));
+            renderBlog(filtered);
+        }
+
+        function openArticle(id){
+            const a=articles.find(x=>x.id===id);
+            if(!a)return;
+            document.getElementById('articleImg').src=a.img;
+            document.getElementById('articleTitle').textContent=a.title;
+            document.getElementById('articleMeta').innerHTML=`<span><i class="fas fa-calendar"></i> ${a.date}</span><span><i class="fas fa-tag"></i> ${a.cat}</span>`;
+            document.getElementById('articleContent').innerHTML=a.content;
+            document.getElementById('articleModal').classList.add('active');
+            document.body.style.overflow='hidden';
+        }
+
+        function closeArticle(){
+            document.getElementById('articleModal').classList.remove('active');
+            document.body.style.overflow='';
+        }
+
+        document.getElementById('articleModal').addEventListener('click',closeArticle);
+        renderBlog(articles);
+    </script>
+</body>
+</html>

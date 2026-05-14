@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - نظافة brillante</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+    <div class="admin-wrapper">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-broom"></i>
+                <span>نظافة brillante</span>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="active"><i class="fas fa-chart-bar"></i> لوحة التحكم</a>
+                <a href="#" onclick="showSection('bookings')"><i class="fas fa-calendar-check"></i> الحجوزات</a>
+                <a href="#" onclick="showSection('contacts')"><i class="fas fa-envelope"></i> الرسائل</a>
+                <a href="#" onclick="showSection('all')"><i class="fas fa-database"></i> جميع البيانات</a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="../index.html"><i class="fas fa-globe"></i> الموقع</a>
+                <a href="#" onclick="adminLogout()"><i class="fas fa-sign-out-alt"></i> خروج</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <h1><i class="fas fa-database"></i> قاعدة البيانات</h1>
+                <div class="topbar-actions">
+                    <button onclick="if(confirm('مسح جميع البيانات؟')){clearDB();refresh();}" class="btn-danger"><i class="fas fa-trash"></i> مسح الكل</button>
+                </div>
+            </header>
+
+            <div class="stats-cards">
+                <div class="stat-card">
+                    <i class="fas fa-database"></i>
+                    <span class="number" id="totalCount">0</span>
+                    <span class="label">إجمالي السجلات</span>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-calendar-check"></i>
+                    <span class="number" id="bookingCount">0</span>
+                    <span class="label">حجوزات</span>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-envelope"></i>
+                    <span class="number" id="contactCount">0</span>
+                    <span class="label">رسائل</span>
+                </div>
+            </div>
+
+            <div class="table-card">
+                <div class="table-toolbar">
+                    <div>
+                        <label>تصفية:</label>
+                        <select id="filterType" onchange="refresh()">
+                            <option value="all">الكل</option>
+                            <option value="booking">الحجوزات</option>
+                            <option value="contact">رسائل التواصل</option>
+                        </select>
+                    </div>
+                    <span id="recordCount" style="color:#64748b;font-size:0.9rem;"></span>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>التاريخ</th>
+                                <th>النوع</th>
+                                <th>الاسم</th>
+                                <th>الهاتف</th>
+                                <th>التفاصيل</th>
+                                <th>إجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminData"><tr><td colspan="6" class="empty">جاري التحميل...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- View Modal -->
+    <div class="modal-overlay" id="viewModal" style="display:none;" onclick="closeViewModal()">
+        <div class="modal-box" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2>تفاصيل السجل</h2>
+                <button onclick="closeViewModal()" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body" id="viewContent"></div>
+        </div>
+    </div>
+
+    <script src="assets/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>معرض الصور - نظافة brillante</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        .gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+        .gallery-item{position:relative;border-radius:var(--radius-lg);overflow:hidden;cursor:pointer;aspect-ratio:4/3}
+        .gallery-item img{width:100%;height:100%;object-fit:cover;transition:var(--transition)}
+        .gallery-item:hover img{transform:scale(1.08)}
+        .gallery-item .overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.6),transparent);opacity:0;transition:var(--transition);display:flex;align-items:flex-end;padding:20px}
+        .gallery-item:hover .overlay{opacity:1}
+        .gallery-item .overlay h4{color:#fff;font-size:1rem;font-weight:700}
+        .gallery-item:nth-child(2){grid-row:span 2;aspect-ratio:auto}
+        .gallery-item:nth-child(5){grid-column:span 2}
+        .lightbox{position:fixed;inset:0;background:rgba(0,0,0,0.88);display:none;align-items:center;justify-content:center;z-index:2000;padding:20px}
+        .lightbox.active{display:flex}
+        .lightbox img{max-width:90%;max-height:85vh;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,0.4)}
+        .lightbox .close{position:absolute;top:24px;left:24px;font-size:2rem;color:#fff;cursor:pointer;width:48px;height:48px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:rgba(255,255,255,0.1);border:none;transition:var(--transition)}
+        .lightbox .close:hover{background:rgba(255,255,255,0.2)}
+        .lightbox .nav-btn{position:absolute;top:50%;transform:translateY(-50%);font-size:1.5rem;color:#fff;cursor:pointer;width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;border:none;transition:var(--transition)}
+        .lightbox .nav-btn:hover{background:rgba(255,255,255,0.2)}
+        .lightbox .prev{right:24px}
+        .lightbox .next{left:24px}
+        .categories-filter{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:40px}
+        .categories-filter button{padding:10px 24px;border-radius:60px;font-weight:600;font-size:0.9rem;background:var(--bg-alt);color:var(--text-body);border:2px solid transparent;cursor:pointer;transition:var(--transition)}
+        .categories-filter button.active,.categories-filter button:hover{background:var(--primary);color:#fff;border-color:var(--primary)}
+        @media(max-width:900px){.gallery-grid{grid-template-columns:repeat(2,1fr);gap:16px}.gallery-item:nth-child(2){grid-row:auto;aspect-ratio:4/3}}
+        @media(max-width:480px){.gallery-grid{grid-template-columns:1fr}}
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <div class="logo">
+                <div class="logo-icon"><i class="fas fa-broom"></i></div>
+                <div>
+                    <h1>نظافة brillante</h1>
+                    <p>خدمة تنظيف احترافية</p>
+                </div>
+            </div>
+            <nav class="navbar">
+                <ul>
+                    <li><a href="index.html">الرئيسية</a></li>
+                    <li><a href="services.html">خدماتنا</a></li>
+                    <li><a href="pricing.html">الأسعار</a></li>
+                    <li><a href="gallery.html" class="active">معرض الصور</a></li>
+                    <li><a href="booking.html" class="btn-primary">حجز خدمة</a></li>
+                </ul>
+            </nav>
+            <button class="mobile-menu-btn"><i class="fas fa-bars"></i></button>
+        </div>
+    </header>
+
+    <section class="section-padding">
+        <div class="container">
+            <div class="section-label" style="display:inline-block;margin:0 auto 16px;text-align:center;width:auto">معرض أعمالنا</div>
+            <h2 class="section-title">صور من <span class="highlight">خدماتنا</span></h2>
+            <p class="section-subtitle">نفخر بتقديم أفضل خدمات التنظيف، شاهد بنفسك جودة عملنا</p>
+
+            <div class="categories-filter">
+                <button class="active" data-filter="all">الكل</button>
+                <button data-filter="kitchen">مطابخ</button>
+                <button data-filter="bathroom">حمامات</button>
+                <button data-filter="living">صالات وغرف</button>
+                <button data-filter="office">مكاتب</button>
+            </div>
+
+            <div class="gallery-grid" id="galleryGrid"></div>
+        </div>
+    </section>
+
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+        <button class="close" onclick="closeLightbox()">&times;</button>
+        <button class="nav-btn prev" onclick="navigateLightbox(-1)"><i class="fas fa-chevron-right"></i></button>
+        <button class="nav-btn next" onclick="navigateLightbox(1)"><i class="fas fa-chevron-left"></i></button>
+        <img id="lightboxImg" src="" alt="">
+    </div>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>نظافة brillante</h3>
+                    <p>خدمة تنظيف احترافية لمنازل ومكاتب نظيفة وصحية.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>روابط سريعة</h3>
+                    <ul>
+                        <li><a href="index.html">الرئيسية</a></li>
+                        <li><a href="services.html">خدماتنا</a></li>
+                        <li><a href="pricing.html">الأسعار</a></li>
+                        <li><a href="gallery.html">معرض الصور</a></li>
+                        <li><a href="blog.html">المدونة</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>روابط مهمة</h3>
+                    <ul>
+                        <li><a href="about.html">عن الشركة</a></li>
+                        <li><a href="contact.html">اتصل بنا</a></li>
+                        <li><a href="privacy.html">سياسة الخصوصية</a></li>
+                        <li><a href="terms.html">الشروط والأحكام</a></li>
+                        <li><a href="admin">لوحة التحكم</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>اتصل بنا</h3>
+                    <p><i class="fas fa-phone"></i> 0645552678</p>
+                    <p><i class="fas fa-envelope"></i> info@brilliant.ma</p>
+                    <p><i class="fas fa-map-marker-alt"></i> الدار البيضاء، المغرب</p>
+                </div>
+            </div>
+            <div class="footer-bottom"><p>&copy; 2026 نظافة brillante. جميع الحقوق محفوظة.</p></div>
+        </div>
+    </footer>
+
+    <script src="assets/js/script.js"></script>
+    <script>
+        const galleryImages=[
+            {src:'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&q=80',title:'تنظيف منزل بالكامل',cat:'living'},
+            {src:'https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?w=600&q=80',title:'تنظيف مطبخ احترافي',cat:'kitchen'},
+            {src:'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=600&q=80',title:'منزل نظيف ومرتب',cat:'living'},
+            {src:'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=600&q=80',title:'تنظيف حمام احترافي',cat:'bathroom'},
+            {src:'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80',title:'تنظيف داخلي شامل',cat:'living'},
+            {src:'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=600&q=80',title:'مطبخ نظيف ومعقم',cat:'kitchen'},
+            {src:'https://images.unsplash.com/photo-1602872030213-3257f3c8a6cf?w=600&q=80',title:'تنظيف صالة استقبال',cat:'living'},
+            {src:'https://images.unsplash.com/photo-1600448713193-28e3f3c0db2a?w=600&q=80',title:'تنظيف غرفة نوم',cat:'living'},
+            {src:'https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&q=80',title:'تنظيف مكتب شركة',cat:'office'},
+            {src:'https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=600&q=80',title:'مكتب عصري نظيف',cat:'office'},
+            {src:'https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=600&q=80',title:'تنظيف مطبخ حديث',cat:'kitchen'},
+            {src:'https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=600&q=80',title:'حمام فاخر ومعقم',cat:'bathroom'},
+        ];
+        let currentFilter='all',currentIndex=0;
+
+        function renderGallery(){
+            const grid=document.getElementById('galleryGrid');
+            const filtered=currentFilter==='all'?galleryImages:galleryImages.filter(i=>i.cat===currentFilter);
+            grid.innerHTML=filtered.map((img,i)=>`
+                <div class="gallery-item" onclick="openLightbox(${galleryImages.indexOf(img)})">
+                    <img src="${img.src}" alt="${img.title}" loading="lazy">
+                    <div class="overlay"><h4>${img.title}</h4></div>
+                </div>
+            `).join('');
+        }
+
+        function openLightbox(index){
+            currentIndex=index;
+            document.getElementById('lightboxImg').src=galleryImages[index].src;
+            document.getElementById('lightbox').classList.add('active');
+            document.body.style.overflow='hidden';
+        }
+
+        function closeLightbox(){
+            document.getElementById('lightbox').classList.remove('active');
+            document.body.style.overflow='';
+        }
+
+        function navigateLightbox(dir){
+            currentIndex+=dir;
+            if(currentIndex<0)currentIndex=galleryImages.length-1;
+            if(currentIndex>=galleryImages.length)currentIndex=0;
+            document.getElementById('lightboxImg').src=galleryImages[currentIndex].src;
+        }
+
+        document.addEventListener('keydown',e=>{
+            if(e.key==='Escape')closeLightbox();
+            if(e.key==='ArrowRight')navigateLightbox(1);
+            if(e.key==='ArrowLeft')navigateLightbox(-1);
+        });
+
+        document.querySelectorAll('.categories-filter button').forEach(btn=>{
+            btn.addEventListener('click',function(){
+                document.querySelectorAll('.categories-filter button').forEach(b=>b.classList.remove('active'));
+                this.classList.add('active');
+                currentFilter=this.dataset.filter;
+                renderGallery();
+            });
+        });
+
+        renderGallery();
+    </script>
+</body>
+</html>
