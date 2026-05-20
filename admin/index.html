@@ -12,42 +12,56 @@
         .login-box .icon { font-size: 3rem; color: #0d9488; margin-bottom: 10px; }
         .login-box h1 { font-size: 1.5rem; margin-bottom: 6px; }
         .login-box p { color: #64748b; margin-bottom: 30px; font-size: 0.95rem; }
-        .divider { display: flex; align-items: center; gap: 12px; margin: 24px 0; color: #94a3b8; font-size: 0.85rem; }
-        .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: #e2e8f0; }
+        .form-group { margin-bottom: 20px; text-align: right; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 0.95rem; }
+        .form-group input { width: 100%; padding: 14px 18px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; outline: none; transition: 0.3s; }
+        .form-group input:focus { border-color: #0d9488; box-shadow: 0 0 0 4px rgba(13,148,136,0.1); }
+        .btn-login { width: 100%; padding: 16px; background: #0d9488; color: #fff; border: none; border-radius: 12px; font-size: 1.05rem; font-weight: 600; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-login:hover { background: #0f766e; transform: translateY(-2px); }
+        .btn-login:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
         .error-msg { background: #fee2e2; color: #991b1b; padding: 14px; border-radius: 10px; margin-bottom: 20px; display: none; font-size: 0.95rem; text-align: center; }
         .back-link { text-align: center; margin-top: 20px; }
         .back-link a { color: #64748b; text-decoration: none; font-size: 0.9rem; }
         .back-link a:hover { color: #0d9488; }
-        .google-btn-wrapper { display: flex; justify-content: center; min-height: 50px; }
-        .login-hint { color: #94a3b8; font-size: 0.8rem; margin-top: 16px; }
     </style>
 </head>
 <body>
     <div class="login-box">
         <div class="icon"><i class="fas fa-shield-alt"></i></div>
         <h1>لوحة التحكم</h1>
-        <p>سجل الدخول باستخدام حساب Google</p>
+        <p>أدخل بريدك الإلكتروني وكلمة المرور للدخول</p>
         <div class="error-msg" id="errorMsg"></div>
-
-        <div class="google-btn-wrapper" id="googleButton"></div>
-
-        <div class="login-hint">يُسمح فقط للحسابات المصرح لها</div>
+        <form onsubmit="return adminLogin(event)">
+            <div class="form-group">
+                <label>البريد الإلكتروني</label>
+                <input type="text" id="username" placeholder="salaheddineezzahraoui1@gmail.com" required>
+            </div>
+            <div class="form-group">
+                <label>كلمة المرور</label>
+                <input type="password" id="password" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn-login" id="loginBtn"><i class="fas fa-sign-in-alt"></i> دخول</button>
+        </form>
         <div class="back-link"><a href="../index.html"><i class="fas fa-arrow-right"></i> العودة إلى الموقع</a></div>
     </div>
-
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script>
         var API_URL = 'http://localhost:5000';
-        var GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID';
 
-        function handleGoogleCredential(response) {
+        function adminLogin(e) {
+            e.preventDefault();
+            var email = document.getElementById('username').value.trim();
+            var password = document.getElementById('password').value;
             var err = document.getElementById('errorMsg');
-            err.style.display = 'none';
+            var btn = document.getElementById('loginBtn');
 
-            fetch(API_URL + '/api/auth/google', {
+            err.style.display = 'none';
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري تسجيل الدخول...';
+
+            fetch(API_URL + '/api/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ idToken: response.credential })
+                body: JSON.stringify({ email: email, password: password })
             })
             .then(function(resp) {
                 if (!resp.ok) return resp.json().then(function(d) { throw new Error(d.error || 'خطأ في تسجيل الدخول'); });
@@ -56,13 +70,18 @@
             .then(function(data) {
                 sessionStorage.setItem('adminToken', data.token);
                 sessionStorage.setItem('adminEmail', data.email);
-                sessionStorage.setItem('adminName', data.name || data.email);
                 window.location.href = 'dashboard.html';
             })
             .catch(function(error) {
-                err.textContent = error.message || 'فشل تسجيل الدخول بحساب Google';
+                err.textContent = error.message || 'البريد الإلكتروني أو كلمة المرور غير صحيحة';
                 err.style.display = 'block';
+            })
+            .finally(function() {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> دخول';
             });
+
+            return false;
         }
 
         if (sessionStorage.getItem('adminToken')) {
