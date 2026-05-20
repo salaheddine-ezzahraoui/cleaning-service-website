@@ -21,6 +21,8 @@
                 <a href="#" onclick="showSection('all')"><i class="fas fa-database"></i> جميع البيانات</a>
             </nav>
             <div class="sidebar-footer">
+                <div style="padding:0 16px 0;font-size:0.85rem;color:rgba(255,255,255,0.7)" id="adminNameDisplay"></div>
+                <div style="padding:0 16px 8px;font-size:0.75rem;color:rgba(255,255,255,0.4)" id="adminEmailDisplay"></div>
                 <a href="../index.html"><i class="fas fa-globe"></i> الموقع</a>
                 <a href="#" onclick="adminLogout()"><i class="fas fa-sign-out-alt"></i> خروج</a>
             </div>
@@ -30,7 +32,7 @@
             <header class="topbar">
                 <h1><i class="fas fa-database"></i> قاعدة البيانات</h1>
                 <div class="topbar-actions">
-                    <button onclick="if(confirm('مسح جميع البيانات؟')){clearDB();refresh();}" class="btn-danger"><i class="fas fa-trash"></i> مسح الكل</button>
+                    <button onclick="clearDB()" class="btn-danger"><i class="fas fa-trash"></i> مسح الكل</button>
                 </div>
             </header>
 
